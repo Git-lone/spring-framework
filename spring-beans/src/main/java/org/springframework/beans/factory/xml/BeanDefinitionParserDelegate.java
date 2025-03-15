@@ -75,7 +75,7 @@ import org.springframework.util.xml.DomUtils;
  *
  * @author Rob Harrop
  * @author Juergen Hoeller
- * @author Rod Johnson
+ * @author Rod Johnson1
  * @author Mark Fisher
  * @author Gary Russell
  * @since 2.0

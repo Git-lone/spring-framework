@@ -38,6 +38,7 @@ import org.springframework.core.ResolvableType;
  * @see ConfigurableListableBeanFactory#getBeanDefinition
  * @see org.springframework.beans.factory.support.RootBeanDefinition
  * @see org.springframework.beans.factory.support.ChildBeanDefinition
+ * 定义了各种Bean对象及其相互的关系
  */
 public interface BeanDefinition extends AttributeAccessor, BeanMetadataElement {
 

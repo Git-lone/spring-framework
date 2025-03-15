@@ -30,6 +30,8 @@ package org.springframework.context;
  * @see org.springframework.context.event.ApplicationEventMulticaster
  * @see org.springframework.context.event.EventPublicationInterceptor
  * @see org.springframework.transaction.event.TransactionalApplicationListener
+ * 让容器拥有发布应用上下文事件的功能，包括容器启动事件、关闭事件等
+ * 实现了 ApplicationListener 事件监听接口的 Bean 可以接收到容器事件，并对事件进行响应处理
  */
 @FunctionalInterface
 public interface ApplicationEventPublisher {

@@ -199,7 +199,7 @@ class DisposableBeanAdapter implements DisposableBean, Runnable, Serializable {
 				processor.postProcessBeforeDestruction(this.bean, this.beanName);
 			}
 		}
-
+		// 若实现 DisposableBean 接口，则执行 destory()方法
 		if (this.invokeDisposableBean) {
 			if (logger.isTraceEnabled()) {
 				logger.trace("Invoking destroy() on bean with name '" + this.beanName + "'");
@@ -242,6 +242,7 @@ class DisposableBeanAdapter implements DisposableBean, Runnable, Serializable {
 			}
 		}
 		else if (this.destroyMethods != null) {
+			// 若配置自定义的 detory-method 方法，则执行
 			for (Method destroyMethod : this.destroyMethods) {
 				invokeCustomDestroyMethod(destroyMethod);
 			}

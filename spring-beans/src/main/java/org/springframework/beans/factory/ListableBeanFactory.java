@@ -56,6 +56,7 @@ import org.springframework.core.ResolvableType;
  * @since 16 April 2001
  * @see HierarchicalBeanFactory
  * @see BeanFactoryUtils
+ * 该接口定义了访问容器中 Bean 基本信息的若干方法，如查看Bean 的个数、获取某一类型 Bean 的配置名、查看容器中是否包括某一 Bean 等方法
  */
 public interface ListableBeanFactory extends BeanFactory {
 
