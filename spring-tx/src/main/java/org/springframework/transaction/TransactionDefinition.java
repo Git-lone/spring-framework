@@ -41,8 +41,10 @@ import org.jspecify.annotations.Nullable;
  * @see org.springframework.transaction.support.DefaultTransactionDefinition
  * @see org.springframework.transaction.interceptor.TransactionAttribute
  */
+// 事务属性
 public interface TransactionDefinition {
 
+	// 事务的传播行为
 	/**
 	 * Support a current transaction; create a new one if none exists.
 	 * Analogous to the EJB transaction attribute of the same name.
@@ -137,6 +139,7 @@ public interface TransactionDefinition {
 	 * <p>All other levels correspond to the JDBC isolation levels.
 	 * @see java.sql.Connection
 	 */
+	// 事务的隔离级别
 	int ISOLATION_DEFAULT = -1;
 
 	/**
@@ -200,6 +203,7 @@ public interface TransactionDefinition {
 	 * @see #PROPAGATION_REQUIRED
 	 * @see org.springframework.transaction.support.TransactionSynchronizationManager#isActualTransactionActive()
 	 */
+	// 返回事务的传播行为，默认值为 REQUIRED
 	default int getPropagationBehavior() {
 		return PROPAGATION_REQUIRED;
 	}
@@ -222,6 +226,7 @@ public interface TransactionDefinition {
 	 * @see #ISOLATION_DEFAULT
 	 * @see org.springframework.transaction.support.AbstractPlatformTransactionManager#setValidateExistingTransaction
 	 */
+	// 返回事务的隔离级别，默认是 DEFAULT
 	default int getIsolationLevel() {
 		return ISOLATION_DEFAULT;
 	}
@@ -237,6 +242,8 @@ public interface TransactionDefinition {
 	 * <p>The default is {@link #TIMEOUT_DEFAULT}.
 	 * @return the transaction timeout
 	 */
+	// 返回事务的超时时间，默认值为-1
+	// 如果超过该时间限制但事务还没有完成，则自动回滚事务
 	default int getTimeout() {
 		return TIMEOUT_DEFAULT;
 	}
@@ -258,6 +265,7 @@ public interface TransactionDefinition {
 	 * @see org.springframework.transaction.support.TransactionSynchronization#beforeCommit(boolean)
 	 * @see org.springframework.transaction.support.TransactionSynchronizationManager#isCurrentTransactionReadOnly()
 	 */
+	// 返回是否为只读事务，默认值为 false
 	default boolean isReadOnly() {
 		return false;
 	}

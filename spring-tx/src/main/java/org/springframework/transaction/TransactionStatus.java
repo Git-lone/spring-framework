@@ -51,6 +51,7 @@ public interface TransactionStatus extends TransactionExecution, SavepointManage
 	 * @see #rollbackToSavepoint(Object)
 	 * @see #releaseSavepoint(Object)
 	 */
+	// 是否有恢复点
 	default boolean hasSavepoint() {
 		return false;
 	}

@@ -140,6 +140,12 @@ import org.springframework.web.util.WebUtils;
  * @see #setContextInitializerClasses
  * @see #setNamespace
  */
+
+/**
+ * {@link FrameworkServlet} 是Spring 对Servlet规范的实现，它继承 HttpServletBean，对 doPost()、doGet()、doDelete()方法都有实现
+ * 主要关注 {@link FrameworkServlet#processRequest(HttpServletRequest, HttpServletResponse)}
+ * 它的继承类只有一个那就是 {@link DispatcherServlet}
+ * */
 @SuppressWarnings("serial")
 public abstract class FrameworkServlet extends HttpServletBean implements ApplicationContextAware {
 
@@ -982,24 +988,31 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 	 * <p>The actual event handling is performed by the abstract
 	 * {@link #doService} template method.
 	 */
+	// 这个方法中主要的逻辑是主备请求需要的上下文和参数
 	protected final void processRequest(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-
+		// 获取当前系统时间，用来计算这个步骤的处理耗时
 		long startTime = System.currentTimeMillis();
 		Throwable failureCause = null;
-
+		// 获取当前服务所在地区，在RequestContextFilter中继续处理设值
 		LocaleContext previousLocaleContext = LocaleContextHolder.getLocaleContext();
+		// 创建相关地区的对象的LocaleContext
 		LocaleContext localeContext = buildLocaleContext(request);
-
+		// 获取请求的属性，请求相关属性会在 RequestContextHoler 中，它使用ThreadLocal实现的
 		RequestAttributes previousAttributes = RequestContextHolder.getRequestAttributes();
+		// 创建 requestAttributes，ServletRequestAttributes是RequestAttributes的子类
 		ServletRequestAttributes requestAttributes = buildRequestAttributes(request, response, previousAttributes);
 
+		// 从request获取WebAsyncManager，在filter阶段会创建WebAsyncManager，表示是否为异步请求
 		WebAsyncManager asyncManager = WebAsyncUtils.getAsyncManager(request);
+		// 将FrameworkServlet的内部类RequestBindingInterceptor设置到asyncManager中
 		asyncManager.registerCallableInterceptor(FrameworkServlet.class.getName(), new RequestBindingInterceptor());
 
+		// 将localeContext更requestAttributes设置到LocaleContextHolder更RequestContextHolder中
 		initContextHolders(request, localeContext, requestAttributes);
 
 		try {
+			// ⭐⭐⭐进行业务处理，模板模式，由子类实现
 			doService(request, response);
 		}
 		catch (ServletException | IOException ex) {
@@ -1012,11 +1025,14 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 		}
 
 		finally {
+			// 移除ThreadLocal中的请求相关信息，attribute跟context信息
 			resetContextHolders(request, previousLocaleContext, previousAttributes);
 			if (requestAttributes != null) {
 				requestAttributes.requestCompleted();
 			}
+			// 打印结果
 			logResult(request, response, failureCause, asyncManager);
+			// 发布请求处理完成事件
 			publishRequestHandledEvent(request, response, startTime, failureCause);
 		}
 	}
