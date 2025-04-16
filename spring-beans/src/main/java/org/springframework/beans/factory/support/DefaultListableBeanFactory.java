@@ -1163,12 +1163,15 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 
 		BeanDefinition existingDefinition = this.beanDefinitionMap.get(beanName);
 		if (existingDefinition != null) {
+			// 如果已经注册
 			if (!isBeanDefinitionOverridable(beanName)) {
+				// 检查是否可以覆盖
 				throw new BeanDefinitionOverrideException(beanName, beanDefinition, existingDefinition);
 			}
 			else {
 				logBeanDefinitionOverriding(beanName, beanDefinition, existingDefinition);
 			}
+			// 覆盖
 			this.beanDefinitionMap.put(beanName, beanDefinition);
 		}
 		else {
@@ -1211,6 +1214,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 				this.beanDefinitionNames.add(beanName);
 				removeManualSingletonName(beanName);
 			}
+			// 重置所有已经注册过的BeanDefinition的缓存
 			this.frozenBeanDefinitionNames = null;
 		}
 

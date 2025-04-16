@@ -66,6 +66,7 @@ public interface ImportSelector {
 	 * the {@link AnnotationMetadata} of the importing @{@link Configuration} class.
 	 * @return the class names, or an empty array if none
 	 */
+	// 获取所有符合条件的类的全限定类名，这些类需要加载到IoC容器中
 	String[] selectImports(AnnotationMetadata importingClassMetadata);
 
 	/**

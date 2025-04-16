@@ -113,6 +113,7 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 
 	/**
 	 * Register each bean definition within the given root {@code <beans/>} element.
+	 * 注册<beans/>配置的Beans
 	 */
 	@SuppressWarnings("deprecation")  // for Environment.acceptsProfiles(String...)
 	protected void doRegisterBeanDefinitions(Element root) {
@@ -123,6 +124,7 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 		// then ultimately reset this.delegate back to its original (parent) reference.
 		// this behavior emulates a stack of delegates without actually necessitating one.
 		BeanDefinitionParserDelegate parent = this.delegate;
+		// 创建Bean的Element元素解析代理
 		BeanDefinitionParserDelegate current = createDelegate(getReaderContext(), root, parent);
 		this.delegate = current;
 
@@ -144,6 +146,7 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 		}
 
 		preProcessXml(root);
+		// ⭐⭐⭐解析Bean定义资源文件，生成BeanDefinition
 		parseBeanDefinitions(root, current);
 		postProcessXml(root);
 
@@ -185,15 +188,19 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 
 	private void parseDefaultElement(Element ele, BeanDefinitionParserDelegate delegate) {
 		if (delegate.nodeNameEquals(ele, IMPORT_ELEMENT)) {
+			// 如果元素节点是<Import>导入元素，进行导入解析
 			importBeanDefinitionResource(ele);
 		}
 		else if (delegate.nodeNameEquals(ele, ALIAS_ELEMENT)) {
+			// 如果元素节点是<Alias>别名元素，进行别名解析
 			processAliasRegistration(ele);
 		}
 		else if (delegate.nodeNameEquals(ele, BEAN_ELEMENT)) {
+			// ⭐⭐如果元素节点<Bean>元素, 按照Spring的Bean规则解析元素
 			processBeanDefinition(ele, delegate);
 		}
 		else if (delegate.nodeNameEquals(ele, NESTED_BEANS_ELEMENT)) {
+			// 如果元素节点<Beans>元素，即它是嵌套类型的，递归解析
 			// recurse
 			doRegisterBeanDefinitions(ele);
 		}
@@ -300,11 +307,13 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 	 * and registering it with the registry.
 	 */
 	protected void processBeanDefinition(Element ele, BeanDefinitionParserDelegate delegate) {
+		// 将元素包装成BeanDefinitionHolder
 		BeanDefinitionHolder bdHolder = delegate.parseBeanDefinitionElement(ele);
 		if (bdHolder != null) {
 			bdHolder = delegate.decorateBeanDefinitionIfRequired(ele, bdHolder);
 			try {
 				// Register the final decorated instance.
+				// ⭐⭐⭐注册最终的装饰实例
 				BeanDefinitionReaderUtils.registerBeanDefinition(bdHolder, getReaderContext().getRegistry());
 			}
 			catch (BeanDefinitionStoreException ex) {

@@ -117,6 +117,7 @@ public abstract class AbstractRefreshableApplicationContext extends AbstractAppl
 	 */
 	@Override
 	protected final void refreshBeanFactory() throws BeansException {
+		// 在创建IoC容器前，如果已经有容器存在，则需要把已有的容器销毁和关闭，以保证在refresh之后使用的是新建立起来的IoC容器
 		if (hasBeanFactory()) {
 			destroyBeans();
 			closeBeanFactory();
@@ -126,6 +127,7 @@ public abstract class AbstractRefreshableApplicationContext extends AbstractAppl
 			beanFactory.setSerializationId(getId());
 			beanFactory.setApplicationStartup(getApplicationStartup());
 			customizeBeanFactory(beanFactory);
+			// ⭐⭐⭐加载BeanDefinitions
 			loadBeanDefinitions(beanFactory);
 			this.beanFactory = beanFactory;
 		}

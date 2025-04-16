@@ -573,6 +573,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 		return this.applicationListeners;
 	}
 
+	// ⭐⭐⭐⭐⭐IoC初始化的入口，非常典型的资源类加载处理型的思路，模板方法！！！
 	@Override
 	public void refresh() throws BeansException, IllegalStateException {
 		this.startupShutdownLock.lock();
@@ -585,13 +586,17 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 			prepareRefresh();
 
 			// Tell the subclass to refresh the internal bean factory.
+			// ⭐⭐⭐1.获取可刷新容器的Bean工厂，IoC初始化的入口！！！
 			ConfigurableListableBeanFactory beanFactory = obtainFreshBeanFactory();
 
 			// Prepare the bean factory for use in this context.
+			// 2.准备 Bean Factory 以在此上下文中使用
 			prepareBeanFactory(beanFactory);
 
 			try {
+				// 3.后续处理
 				// Allows post-processing of the bean factory in context subclasses.
+				// 3.1设置和注册BeanFactory的后置处理器
 				postProcessBeanFactory(beanFactory);
 
 				StartupStep beanPostProcess = this.applicationStartup.start("spring.context.beans.post-process");
@@ -602,21 +607,27 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 				beanPostProcess.end();
 
 				// Initialize message source for this context.
+				// 3.2初始化消息源
 				initMessageSource();
 
 				// Initialize event multicaster for this context.
+				// 3.3初始化时间机制
 				initApplicationEventMulticaster();
 
-				// Initialize other special beans in specific context subclasses.
+				// Initialize other special beans in specific context subclasses.、
+				// 3.4初始化特殊Bean
 				onRefresh();
 
 				// Check for listener beans and register them.
+				// 3.5注册监听器
 				registerListeners();
 
 				// Instantiate all remaining (non-lazy-init) singletons.
+				// 3.6实例化懒加载的Bean
 				finishBeanFactoryInitialization(beanFactory);
 
 				// Last step: publish corresponding event.
+				// 4.发布容器并结束 refresh 方法
 				finishRefresh();
 			}
 
@@ -703,6 +714,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	 * @see #getBeanFactory()
 	 */
 	protected ConfigurableListableBeanFactory obtainFreshBeanFactory() {
+		// ⭐⭐⭐刷新Bean工厂
 		refreshBeanFactory();
 		return getBeanFactory();
 	}

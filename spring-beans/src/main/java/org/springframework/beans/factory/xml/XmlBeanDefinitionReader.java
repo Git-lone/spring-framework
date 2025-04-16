@@ -314,6 +314,7 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 	 */
 	@Override
 	public int loadBeanDefinitions(Resource resource) throws BeanDefinitionStoreException {
+		// 将资源编码
 		return loadBeanDefinitions(new EncodedResource(resource));
 	}
 
@@ -342,6 +343,7 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 			if (encodedResource.getEncoding() != null) {
 				inputSource.setEncoding(encodedResource.getEncoding());
 			}
+			// ⭐⭐⭐ 加载Bean定义资源 inputSource实际是resource的字节流
 			return doLoadBeanDefinitions(inputSource, encodedResource.getResource());
 		}
 		catch (IOException ex) {
@@ -394,7 +396,9 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 			throws BeanDefinitionStoreException {
 
 		try {
+			// ⭐⭐将Bean定义资源转换成通用的Document对象
 			Document doc = doLoadDocument(inputSource, resource);
+			// ⭐⭐⭐解析Bean定义资源文件
 			int count = registerBeanDefinitions(doc, resource);
 			if (logger.isDebugEnabled()) {
 				logger.debug("Loaded " + count + " bean definitions from " + resource);
@@ -436,6 +440,7 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 	 * @see DocumentLoader#loadDocument
 	 */
 	protected Document doLoadDocument(InputSource inputSource, Resource resource) throws Exception {
+		// 使用配置的DocumentLoader加载XML定义文件为Document
 		return this.documentLoader.loadDocument(inputSource, getEntityResolver(), this.errorHandler,
 				getValidationModeForResource(resource), isNamespaceAware());
 	}
@@ -511,11 +516,15 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 	 * @see #loadBeanDefinitions
 	 * @see #setDocumentReaderClass
 	 * @see BeanDefinitionDocumentReader#registerBeanDefinitions
+	 * 按照Spring的Bean语义要求将Bean定义资源解析并转换为容器内部数据结构
 	 */
 	public int registerBeanDefinitions(Document doc, Resource resource) throws BeanDefinitionStoreException {
+		// 创建BeanDefinitionDocumentReader对象，解析Document对象
 		BeanDefinitionDocumentReader documentReader = createBeanDefinitionDocumentReader();
 		int countBefore = getRegistry().getBeanDefinitionCount();
+		// ⭐⭐⭐解析过程入口，这里使用了委派模式，具体的解析实现过程有实现类DefaultBeanDefinitionDocumentReader完成
 		documentReader.registerBeanDefinitions(doc, createReaderContext(resource));
+		// 返回此次解析了多少个对象
 		return getRegistry().getBeanDefinitionCount() - countBefore;
 	}
 
