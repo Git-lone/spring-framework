@@ -958,7 +958,7 @@ public class DispatcherServlet extends FrameworkServlet {
 				multipartRequestParsed = (processedRequest != request);
 
 				// Determine handler for the current request.
-				// 根据request中的url从handlerMapping中获取
+				// 1.根据request中的url从handlerMapping中获取
 				// 通过handlerMapping获取对应的 handler，它封装了 HandlerInterceptor 的 HandlerExecutionChanin 处理器链路
 				mappedHandler = getHandler(processedRequest);
 				// 如果不存在对应的处理链则直接返回
@@ -966,13 +966,13 @@ public class DispatcherServlet extends FrameworkServlet {
 					noHandlerFound(processedRequest, response);
 					return;
 				}
-				// 执行前置拦截器
+				// 2.执行前置拦截器
 				if (!mappedHandler.applyPreHandle(processedRequest, response)) {
 					return;
 				}
 
 				// Determine handler adapter and invoke the handler.
-				// 从 HandlerExecutionChain 中获取 Handler 然后寻找合适的 HandlerAdapter
+				// 3.从 HandlerExecutionChain 中获取 Handler 然后寻找合适的 HandlerAdapter
 				// ⭐⭐我们写的Controller类会被Spring加载并解析出URL对应的处理函数封装成Handler对象，存储到HandlerMapping对象中
 				// 当有请求来到的时候,DispatcherServlet从HandlerMapping中，查找请求URL对应的Handler，
 				// 然后调用执行Handler对应的函数代码，最后将执行结果返回给客户端
@@ -985,7 +985,7 @@ public class DispatcherServlet extends FrameworkServlet {
 				}
 				// 如果处理的结果返回的视图是空的则使用默认的视图，不为空则用处理的结果
 				applyDefaultViewName(processedRequest, mv);
-				// 执行后置拦截器
+				// 4.执行后置拦截器
 				mappedHandler.applyPostHandle(processedRequest, response, mv);
 			}
 			catch (Exception ex) {
@@ -997,7 +997,7 @@ public class DispatcherServlet extends FrameworkServlet {
 				// 进行错误视图的处理
 				dispatchException = new ServletException("Handler dispatch failed: " + err, err);
 			}
-			// 处理 handler 处理的结果，显然就是对 ModelAndView 或者出现的异常做处理
+			// 5.处理 handler 处理的结果，显然就是对 ModelAndView 或者出现的异常做处理
 			processDispatchResult(processedRequest, response, mappedHandler, mv, dispatchException);
 		}
 		catch (Exception ex) {
