@@ -958,7 +958,7 @@ public class DispatcherServlet extends FrameworkServlet {
 				multipartRequestParsed = (processedRequest != request);
 
 				// Determine handler for the current request.
-				// 1.根据request中的url从handlerMapping中获取
+				// 1.根据request中的url从handlerMapping中获取handler
 				// 通过handlerMapping获取对应的 handler，它封装了 HandlerInterceptor 的 HandlerExecutionChanin 处理器链路
 				mappedHandler = getHandler(processedRequest);
 				// 如果不存在对应的处理链则直接返回
@@ -977,7 +977,7 @@ public class DispatcherServlet extends FrameworkServlet {
 				// 当有请求来到的时候,DispatcherServlet从HandlerMapping中，查找请求URL对应的Handler，
 				// 然后调用执行Handler对应的函数代码，最后将执行结果返回给客户端
 				HandlerAdapter ha = getHandlerAdapter(mappedHandler.getHandler());
-				// 执行对应的HandlerAdapter的Handler方法，拿到对应的视图
+				// 4.执行对应的HandlerAdapter的Handler方法，拿到对应的视图，并处理返回
 				mv = ha.handle(processedRequest, response, mappedHandler.getHandler());
 				// 检查当前的请求是否正在异步处理，如果是的则直接放弃并返回
 				if (asyncManager.isConcurrentHandlingStarted()) {
@@ -985,7 +985,7 @@ public class DispatcherServlet extends FrameworkServlet {
 				}
 				// 如果处理的结果返回的视图是空的则使用默认的视图，不为空则用处理的结果
 				applyDefaultViewName(processedRequest, mv);
-				// 4.执行后置拦截器
+				// 5.执行后置拦截器
 				mappedHandler.applyPostHandle(processedRequest, response, mv);
 			}
 			catch (Exception ex) {

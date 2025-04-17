@@ -988,7 +988,7 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 	 * <p>The actual event handling is performed by the abstract
 	 * {@link #doService} template method.
 	 */
-	// 这个方法中主要的逻辑是主备请求需要的上下文和参数
+	// 这个方法中主要的逻辑是准备请求需要的上下文和参数
 	protected final void processRequest(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		// 获取当前系统时间，用来计算这个步骤的处理耗时
